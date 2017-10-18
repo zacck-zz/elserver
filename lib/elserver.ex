@@ -4,4 +4,5 @@ defmodule Elserver do
   end
 end
 
-IO.puts Elserver.hello("Zacck")
+
+#IO.puts Elserver.hello("Zacck")
