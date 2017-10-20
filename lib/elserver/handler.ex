@@ -14,22 +14,24 @@ defmodule Elserver.Handler do
       |> String.split("\n") 
       |> List.first
       |> String.split(" ")
-    %{ method: method, path: path, resp_body: "" } #last expression of a variable is implicitly returned
+    %{ method: method, path: path, resp_body: "" }  
   end
-
+  
+  #last expression of a variable is implicitly returned
+ 
   def route(conv) do
-    # TODO: Create a new map that also has the response body:
-    conv = %{ method: "GET", path: "/wildthings", resp_body: "Bears, Lions, Tigers" }
+    #Create a new map that also has the response body:
+    %{ conv | resp_body: "Baboons, Trees, Eland" }
   end
 
   def format_response(conv) do
-    # TODO: Use values in the map to create an HTTP response string:
+    # Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 200 OK
     Content-Type: text/html
-    Content-Length: 20
+    Content-Length: #{String.length(conv.resp_body)}
 
-    Bears, Lions, Tigers
+    #{conv.resp_body}
     """
   end
 
