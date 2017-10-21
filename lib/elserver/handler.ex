@@ -34,13 +34,19 @@ defmodule Elserver.Handler do
 
   def route(conv, "Get", "/sharks") do 
     %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
-  end 
-    
- def route(conv, _method, path) do 
-    %{conv| status: 404, resp_body: "The path #{path} was not found on this server"}
+  end
+
+  def route(conv, "Get", "/sharks/" <> id) do 
+    %{conv | status: 200, resp_body: "Shark #{id}"}
   end 
 
- 
+  def route(conv, "Delete", "/sharks/" <> id) do
+    %{conv | status: 202, resp_body: "Deleting #{conv.path}"}
+  end 
+
+  def route(conv, _method, path) do 
+    %{conv| status: 404, resp_body: "The path #{path} was not found on this server"}
+  end
 
   def format_response(conv) do
     # Use values in the map to create an HTTP response string:
@@ -58,10 +64,12 @@ defmodule Elserver.Handler do
     %{
       200 => "OK",
       201 => "Created",
+      202 => "Accepted",
+      204 => "No Content",
       401 => "Unauthorized",
       403 => "Forbidden", 
       404 => "Not Found",
-      500 => "Internal Server Error"
+      500 => "Internal Server Error", 
     }[code]
   end 
 
@@ -106,3 +114,34 @@ response = Elserver.Handler.handle(request)
 
 
 IO.puts response
+
+
+request = """
+Get /sharks/1 HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+
+IO.puts response
+
+request = """
+Delete /sharks/102 HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+
+IO.puts response
+
+
