@@ -23,6 +23,10 @@ defmodule Elserver.Handler do
   def route(conv) do
     route(conv, conv.method, conv.path)
   end
+  
+  def route(conv, _method, path) do 
+    %{conv| resp_body: "The path #{path} was not found on this server"}
+  end 
 
   def route(conv, "Get", "/wildthings") do 
    %{ conv | resp_body: "Baboons, Trees, Eland, Sharks" } 
