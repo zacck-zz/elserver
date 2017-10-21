@@ -17,29 +17,35 @@ defmodule Elserver.Handler do
       |> String.split("\n") 
       |> List.first
       |> String.split(" ")
-    %{ method: method, path: path, resp_body: "" }  
+    %{ method: method,
+       path: path,
+       resp_body: "",
+       status: nil 
+     }  
   end
   
   def route(conv) do
     route(conv, conv.method, conv.path)
   end
   
-  def route(conv, _method, path) do 
-    %{conv| resp_body: "The path #{path} was not found on this server"}
-  end 
-
   def route(conv, "Get", "/wildthings") do 
-   %{ conv | resp_body: "Baboons, Trees, Eland, Sharks" } 
+   %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
   def route(conv, "Get", "/sharks") do 
-    %{ conv | resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
+    %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
   end 
+    
+ def route(conv, _method, path) do 
+    %{conv| status: 404, resp_body: "The path #{path} was not found on this server"}
+  end 
+
+ 
 
   def format_response(conv) do
     # Use values in the map to create an HTTP response string:
     """
-    HTTP/1.1 200 OK
+    HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
     Content-Type: text/html
     Content-Length: #{byte_size(conv.resp_body)}
 
@@ -47,6 +53,17 @@ defmodule Elserver.Handler do
     """
   end
 
+  # define a private function using defp codes 
+  defp status_reason(code) do 
+    %{
+      200 => "OK",
+      201 => "Created",
+      401 => "Unauthorized",
+      403 => "Forbidden", 
+      404 => "Not Found",
+      500 => "Internal Server Error"
+    }[code]
+  end 
 
 end 
 request = """
