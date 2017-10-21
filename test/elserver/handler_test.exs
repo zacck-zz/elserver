@@ -11,7 +11,12 @@ defmodule Elserver.HandlerTest do
     """
 
     assert Elserver.Handler.parse(request) == %{method: "Get", path: "/wildthings", resp_body: ""}
-  
-  end 
+  end
+
+
+  test "it should route a request and return a body" do
+    conversation = %{method: "Get", path: "/colors", resp_body: ""}
+    assert Elserver.Handler.route(conversation) == %{method: "Get", path: "/colors", resp_body: "Red, Green, Blue"} 
+  end  
 
 end 
