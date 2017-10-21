@@ -1,8 +1,8 @@
 defmodule ElserverTest do
   use ExUnit.Case
-  doctest Elserver
 
   test "greets the world" do
-    assert Elserver.hello() == :world
+    name = "Zacck"
+    assert Elserver.hello(name) == "Howdy #{name} from Elixir!"
   end
 end
