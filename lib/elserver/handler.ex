@@ -1,4 +1,8 @@
 defmodule Elserver.Handler do
+  
+  @moduledoc "Handles Http Requests"
+
+  @doc "Transforms the request into a response"
   def handle(request) do
     #pipe the request through the transformational functions in the server
     request 
@@ -11,7 +15,7 @@ defmodule Elserver.Handler do
     |> format_response
   end
 
-  # logger
+  @doc "Logs any 404 responses the server shows"
   def track(%{status: 404, path: path} = conv) do 
     IO.puts "Warning: #{path} does not exist on this server"
     conv
@@ -73,8 +77,10 @@ defmodule Elserver.Handler do
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
+  @pages_path Path.expand("../../pages", __DIR__)
+
   def route(%{method: "Get", path: "/pages/" <> file} = conv) do
-      Path.expand("../../pages", __DIR__)
+      @pages_path
       |> Path.join(file <> ".html")
       |> File.read
       |> handle_file(conv) 
