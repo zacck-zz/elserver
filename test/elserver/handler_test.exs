@@ -10,13 +10,18 @@ defmodule Elserver.HandlerTest do
 
     """
 
-    assert Elserver.Handler.parse(request) == %{method: "Get", path: "/wildthings", resp_body: ""}
+    assert Elserver.Handler.parse(request) == %{method: "Get", path: "/wildthings", resp_body: "", status: nil}
   end
 
 
-  test "it should route a request and return a body" do
-    conversation = %{method: "Get", path: "/colors", resp_body: ""}
-    assert Elserver.Handler.route(conversation) == %{method: "Get", path: "/colors", resp_body: "Red, Green, Blue"} 
+  test "it should return a 404 on paths that don't exist" do
+    conversation = %{method: "Get", path: "/colors", status: nil,  resp_body: ""}
+    assert Elserver.Handler.route(conversation) == %{method: "Get", path: "/colors", resp_body: "The path #{conversation.path} was not found on this server", status: 404} 
+  end 
+
+  test "it should rewrite a path with url parameters" do
+    conversation =  %{method: "Get", path: "/mice?id=1", status: nil, resp_body: ""}
+    assert Elserver.Handler.rewrite_path(conversation) == %{conversation | path: "/mice/1"}
   end  
 
 end 
