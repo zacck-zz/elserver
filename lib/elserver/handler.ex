@@ -2,6 +2,8 @@ defmodule Elserver.Handler do
   
   @moduledoc "Handles Http Requests"
 
+  @pages_path Path.expand("../../pages", __DIR__)
+
   @doc "Transforms the request into a response"
   def handle(request) do
     #pipe the request through the transformational functions in the server
@@ -77,7 +79,6 @@ defmodule Elserver.Handler do
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
-  @pages_path Path.expand("../../pages", __DIR__)
 
   def route(%{method: "Get", path: "/pages/" <> file} = conv) do
       @pages_path
