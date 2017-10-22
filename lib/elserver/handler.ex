@@ -73,13 +73,13 @@ defmodule Elserver.Handler do
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
-  def route(%{method: "Get", path: "/about"} = conv) do
+  def route(%{method: "Get", path: "/pages/" <> file} = conv) do
       Path.expand("../../pages", __DIR__)
-      |> Path.join("about.html")
+      |> Path.join(file <> ".html")
       |> File.read
       |> handle_file(conv) 
-  end
-
+  end 
+  
   def handle_file({:ok, content}, conv) do 
     %{conv | status: 200, resp_body: content}
   end 
@@ -136,7 +136,22 @@ defmodule Elserver.Handler do
 
 end 
 request = """
-Get /about HTTP/1.1
+Get /pages/form HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+IO.puts response
+
+
+
+request = """
+Get /pages/about HTTP/1.1
 Host: example.com 
 User-Agent: ExampleBrowser/1.0
 Accept: */*
