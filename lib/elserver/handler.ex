@@ -3,11 +3,52 @@ defmodule Elserver.Handler do
     #pipe the request through the transformational functions in the server
     request 
     |> parse
+    |> rewrite_path
     |> log 
-    |> route 
+    |> route
+    |> emojify 
+    |> track
     |> format_response
   end
 
+  # logger
+  def track(%{status: 404, path: path} = conv) do 
+    IO.puts "Warning: #{path} does not exist on this server"
+    conv
+  end 
+
+  def track(conv), do: conv
+
+  # path rewrites 
+  def rewrite_path(%{path: "/wildlife"} = conv) do 
+    %{conv | path: "/wildthings"}
+  end
+
+  def rewrite_path(%{path: path} = conv) do
+    regex = ~r{\/(?<thing>\w+)\?id=(?<id>\d+)}
+    captures = Regex.named_captures(regex, path) 
+    rewrite_path_captures(conv, captures)
+  end 
+  
+  def rewrite_path(conv), do: conv
+
+  # emojify response 
+  def emojify(%{status: 200 } = conv) do
+    %{conv | resp_body: "😎  #{conv.resp_body} 😎"}
+  end 
+
+  def emojify(conv), do: conv
+
+  # use path captures in path 
+  def rewrite_path_captures(conv, %{"thing" => thing, "id" => id}) do
+    log(conv) 
+    %{conv | path: "/#{thing}/#{id}"}
+  end 
+
+  def rewrite_path_captures(conv, nil), do: conv 
+
+  
+  # Inspect
   def log(conv), do: IO.inspect conv
 
   def parse(request) do
@@ -24,27 +65,27 @@ defmodule Elserver.Handler do
      }  
   end
   
-  def route(conv) do
-    route(conv, conv.method, conv.path)
-  end
+#  def route(conv) do
+#   route(conv, conv.method, conv.path)
+# end
   
-  def route(conv, "Get", "/wildthings") do 
+  def route(%{method: "Get", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
-  def route(conv, "Get", "/sharks") do 
+  def route(%{method: "Get", path: "/sharks"} = conv) do 
     %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
   end
 
-  def route(conv, "Get", "/sharks/" <> id) do 
+  def route(%{method: "Get", path: "/shark/" <> id } = conv) do 
     %{conv | status: 200, resp_body: "Shark #{id}"}
   end 
 
-  def route(conv, "Delete", "/sharks/" <> id) do
-    %{conv | status: 202, resp_body: "Deleting #{conv.path}"}
+  def route(%{method: "Delete", path: "/shark/" <> id } = conv)  do
+    %{conv | status: 202, resp_body: "Deleting #{id} ..."}
   end 
 
-  def route(conv, _method, path) do 
+  def route(%{path: path} = conv) do 
     %{conv| status: 404, resp_body: "The path #{path} was not found on this server"}
   end
 
@@ -88,6 +129,21 @@ response = Elserver.Handler.handle(request)
 IO.puts response
 
 request = """
+Get /wildlife HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+IO.puts response
+
+
+
+request = """
 Get /sharks HTTP/1.1
 Host: example.com 
 User-Agent: ExampleBrowser/1.0
@@ -117,7 +173,7 @@ IO.puts response
 
 
 request = """
-Get /sharks/1 HTTP/1.1
+Get /shark/1 HTTP/1.1
 Host: example.com 
 User-Agent: ExampleBrowser/1.0
 Accept: */*
@@ -131,7 +187,23 @@ response = Elserver.Handler.handle(request)
 IO.puts response
 
 request = """
-Delete /sharks/102 HTTP/1.1
+Get /shark?id=1 HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+
+IO.puts response
+
+
+
+request = """
+Delete /shark/102 HTTP/1.1
 Host: example.com 
 User-Agent: ExampleBrowser/1.0
 Accept: */*
