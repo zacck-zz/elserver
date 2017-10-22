@@ -29,7 +29,9 @@ defmodule Elserver.HandlerTest do
   test "the tracker should return an unmodified conversation " do 
     conversation = %{method: "Get", path: "/colors", resp_body: "The path /colors was not found on this server", status: 404} 
     assert Elserver.Handler.track(conversation) == conversation
-  end  
+  end 
+
+   
 
 
 
