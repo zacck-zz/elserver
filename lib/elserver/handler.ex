@@ -73,6 +73,26 @@ defmodule Elserver.Handler do
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
+  def route(%{method: "Get", path: "/about"} = conv) do
+      Path.expand("../../pages", __DIR__)
+      |> Path.join("about.html")
+      |> File.read
+      |> handle_file(conv) 
+  end
+
+  def handle_file({:ok, content}, conv) do 
+    %{conv | status: 200, resp_body: content}
+  end 
+
+  def handle_file({:error, :enoent}, conv) do 
+    %{conv | status: 404, resp_body: "The file #{conv.path} does not exist"}
+  end 
+
+  def handle_file({:error, reason}, conv) do 
+    %{conv | status: 500, resp_body: "File Errror: #{reason}"}
+  end 
+
+
   def route(%{method: "Get", path: "/sharks"} = conv) do 
     %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
   end
@@ -115,6 +135,21 @@ defmodule Elserver.Handler do
   end 
 
 end 
+request = """
+Get /about HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+IO.puts response
+
+
+
 request = """
 Get /wildthings HTTP/1.1
 Host: example.com 
