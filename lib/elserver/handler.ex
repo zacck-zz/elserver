@@ -2,6 +2,8 @@ defmodule Elserver.Handler do
   
   @moduledoc "Handles Http Requests"
 
+  import Elserver.Plugins,  only: [rewrite_path: 1, log: 1, track: 1, emojify: 1,]
+  import Elserver.Parser, only: [parse: 1]
   @pages_path Path.expand("../../pages", __DIR__)
 
   @doc "Transforms the request into a response"
@@ -17,61 +19,7 @@ defmodule Elserver.Handler do
     |> format_response
   end
 
-  @doc "Logs any 404 responses the server shows"
-  def track(%{status: 404, path: path} = conv) do 
-    IO.puts "Warning: #{path} does not exist on this server"
-    conv
-  end 
-
-  @doc "Returns unmodified convos"
-  def track(conv), do: conv
-
-  # path rewrites 
-  def rewrite_path(%{path: "/wildlife"} = conv) do 
-    %{conv | path: "/wildthings"}
-  end
-
-  def rewrite_path(%{path: path} = conv) do
-    regex = ~r{\/(?<thing>\w+)\?id=(?<id>\d+)}
-    captures = Regex.named_captures(regex, path) 
-    rewrite_path_captures(conv, captures)
-  end 
-  
-  def rewrite_path(conv), do: conv
-
-  # emojify response 
-  def emojify(%{status: 200 } = conv) do
-    %{conv | resp_body: "😎  #{conv.resp_body} 😎"}
-  end 
-
-  def emojify(conv), do: conv
-
-  # use path captures in path 
-  def rewrite_path_captures(conv, %{"thing" => thing, "id" => id}) do
-    log(conv) 
-    %{conv | path: "/#{thing}/#{id}"}
-  end 
-
-  def rewrite_path_captures(conv, nil), do: conv 
-
-  
-  # Inspect
-  def log(conv), do: IO.inspect conv
-
-  def parse(request) do
-    #Parse the request string into a map:
-    [method, path, _] = 
-      request 
-      |> String.split("\n") 
-      |> List.first
-      |> String.split(" ")
-    %{ method: method,
-       path: path,
-       resp_body: "",
-       status: nil 
-     }  
-  end
-  
+ 
 #  def route(conv) do
 #   route(conv, conv.method, conv.path)
 # end
