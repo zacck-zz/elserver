@@ -1,4 +1,5 @@
 defmodule Elserver.Parser do 
+  alias Elserver.Conversation, as: Conversation
   @moduledoc """
   Parses a http request from a string to a conversation map
   """
@@ -9,10 +10,9 @@ defmodule Elserver.Parser do
       |> String.split("\n") 
       |> List.first
       |> String.split(" ")
-    %{ method: method,
-       path: path,
-       resp_body: "",
-       status: nil 
-     }  
+    %Elserver.Conversation{ 
+       method: method,
+       path: path
+    }  
   end 
 end 
