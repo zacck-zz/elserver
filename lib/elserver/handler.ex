@@ -4,6 +4,7 @@ defmodule Elserver.Handler do
 
   import Elserver.Plugins,  only: [rewrite_path: 1, log: 1, track: 1, emojify: 1,]
   import Elserver.Parser, only: [parse: 1]
+  import Elserver.FileHandler, only: [handle_file: 2]
   @pages_path Path.expand("../../pages", __DIR__)
 
   @doc "Transforms the request into a response"
@@ -36,18 +37,6 @@ defmodule Elserver.Handler do
       |> handle_file(conv) 
   end 
   
-  def handle_file({:ok, content}, conv) do 
-    %{conv | status: 200, resp_body: content}
-  end 
-
-  def handle_file({:error, :enoent}, conv) do 
-    %{conv | status: 404, resp_body: "The file #{conv.path} does not exist"}
-  end 
-
-  def handle_file({:error, reason}, conv) do 
-    %{conv | status: 500, resp_body: "File Errror: #{reason}"}
-  end 
-
 
   def route(%{method: "Get", path: "/sharks"} = conv) do 
     %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
