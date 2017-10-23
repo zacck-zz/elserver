@@ -5,6 +5,7 @@ defmodule Elserver.Handler do
   import Elserver.Plugins,  only: [rewrite_path: 1, log: 1, track: 1, emojify: 1,]
   import Elserver.Parser, only: [parse: 1]
   import Elserver.FileHandler, only: [handle_file: 2]
+  alias Elserver.Conversation 
   @pages_path Path.expand("pages", File.cwd!)
 
   @doc "Transforms the request into a response"
