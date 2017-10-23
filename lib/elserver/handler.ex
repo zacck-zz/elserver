@@ -23,6 +23,7 @@ defmodule Elserver.Handler do
     conv
   end 
 
+  @doc "Returns unmodified convos"
   def track(conv), do: conv
 
   # path rewrites 
