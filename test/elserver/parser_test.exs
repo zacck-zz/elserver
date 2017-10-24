@@ -1,5 +1,6 @@
 defmodule Elserver.ParserTest do 
   use ExUnit.Case
+  alias Elserver.Conversation
     test "it should parse the request into a map" do 
       request = """
       Get /wildthings HTTP/1.1
@@ -9,7 +10,7 @@ defmodule Elserver.ParserTest do
 
       """
 
-      assert Elserver.Parser.parse(request) == %{method: "Get", path: "/wildthings", resp_body: "", status: nil}
+      assert Elserver.Parser.parse(request) == %Conversation{method: "Get", path: "/wildthings", resp_body: "", status: nil}
   end
 
 
