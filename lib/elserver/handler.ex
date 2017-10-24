@@ -26,12 +26,12 @@ defmodule Elserver.Handler do
 #   route(conv, conv.method, conv.path)
 # end
   
-  def route(%{method: "Get", path: "/wildthings"} = conv) do 
+  def route(%Conversation{method: "Get", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
 
-  def route(%{method: "Get", path: "/pages/" <> file} = conv) do
+  def route(%Conversation{method: "Get", path: "/pages/" <> file} = conv) do
       @pages_path
       |> Path.join(file <> ".html")
       |> File.read
@@ -39,23 +39,23 @@ defmodule Elserver.Handler do
   end 
   
 
-  def route(%{method: "Get", path: "/sharks"} = conv) do 
+  def route(%Conversation{method: "Get", path: "/sharks"} = conv) do 
     %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
   end
 
-  def route(%{method: "Get", path: "/shark/" <> id } = conv) do 
+  def route(%Conversation{method: "Get", path: "/shark/" <> id } = conv) do 
     %{conv | status: 200, resp_body: "Shark #{id}"}
   end 
 
-  def route(%{method: "Delete", path: "/shark/" <> id } = conv)  do
+  def route(%Conversation{method: "Delete", path: "/shark/" <> id } = conv)  do
     %{conv | status: 202, resp_body: "Deleting #{id} ..."}
   end 
 
-  def route(%{path: path} = conv) do 
+  def route(%Conversation{path: path} = conv) do 
     %{conv| status: 404, resp_body: "The path #{path} was not found on this server"}
   end
 
-  def format_response(conv) do
+  def format_response(%Conversation{} = conv) do
     # Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
