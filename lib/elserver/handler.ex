@@ -2,7 +2,7 @@ defmodule Elserver.Handler do
   
   @moduledoc "Handles Http Requests"
 
-  import Elserver.Plugins,  only: [rewrite_path: 1, log: 1, track: 1, emojify: 1,]
+  import Elserver.Plugins,  only: [rewrite_path: 1, track: 1, emojify: 1,]
   import Elserver.Parser, only: [parse: 1]
   import Elserver.FileHandler, only: [handle_file: 2]
   alias Elserver.Conversation 
@@ -14,7 +14,6 @@ defmodule Elserver.Handler do
     request 
     |> parse
     |> rewrite_path
-    |> log 
     |> route
     |> emojify 
     |> track
@@ -22,10 +21,13 @@ defmodule Elserver.Handler do
   end
 
  
-#  def route(conv) do
-#   route(conv, conv.method, conv.path)
-# end
-  
+  # name=Great&type=white
+  def route(%Conversation{method: "Post", path: "/sharks/"} = conv) do 
+    %{ conv | status: 201, 
+              resp_body: "Created a #{conv.params["name"]} #{conv.params["type"]} shark"} 
+  end 
+
+ 
   def route(%Conversation{method: "Get", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
@@ -197,5 +199,24 @@ response = Elserver.Handler.handle(request)
 
 
 IO.puts response
+
+request = """
+Post /sharks/ HTTP/1.1
+Host: example.com 
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+Content-Type: application/x-www-form-urlencoded 
+Content-Length: 16
+
+name=Great&type=white
+"""
+
+
+response = Elserver.Handler.handle(request)
+
+
+IO.puts response
+
+
 
 
