@@ -4,15 +4,26 @@ defmodule Elserver.Parser do
   Parses a http request from a string to a conversation map
   """
   def parse(request) do
-    #Parse the request string into a map:
-    [method, path, _] = 
-      request 
-      |> String.split("\n") 
-      |> List.first
-      |> String.split(" ")
+    #split params from request
+    [header_lines, params_string] = String.split(request, "\n\n")
+
+
+    #split request line from header lines 
+    [request_line | request_headers] = String.split(header_lines, "\n")
+  
+    [method, path, _] =  String.split(request_line, " ")     
+    
+
+    params = parse_params(params_string)
+
     %Elserver.Conversation{ 
-       method: method,
-       path: path
+      method: method,
+      path: path,
+      params: params
     }  
+  end 
+
+  defp parse_params(params_string) do
+    params_string |> String.trim |> URI.decode_query
   end 
 end 
