@@ -2,6 +2,7 @@ defmodule Elserver.Conversation do
   defstruct method: "", 
             path: "", 
             params: %{},
+            headers: %{},
             resp_body: "", 
             status: nil
   
