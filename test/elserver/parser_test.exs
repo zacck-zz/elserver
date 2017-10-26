@@ -10,7 +10,7 @@ defmodule Elserver.ParserTest do
 
       """
 
-      assert Elserver.Parser.parse(request) == %Conversation{method: "Get", path: "/wildthings", resp_body: "", status: nil}
+      assert Elserver.Parser.parse(request) == %Conversation{method: "Get", headers: %{"Accept" =>  "*/*", "Host" =>  "example.com", "User-Agent" => "ExampleBrowser/1.0"}, path: "/wildthings", resp_body: "", status: nil}
   end
 
 

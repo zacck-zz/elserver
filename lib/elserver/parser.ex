@@ -34,7 +34,7 @@ defmodule Elserver.Parser do
 
   defp parse_headers([head | tail ], headers) do 
     [key, value] = String.split(head, ": ")
-    headers = Map.put(headers, key, value)
+    headers = Map.put(headers, key, String.trim(value))
     parse_headers(tail, headers)
   end 
 
