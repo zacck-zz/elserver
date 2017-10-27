@@ -32,5 +32,10 @@ defmodule Elserver.PluginsTest do
   test "emojify should apply emojis" do 
     conversation = %Conversation{method: "Get", path: "/colors", resp_body: "emoji", status: 200}
     assert Plugins.emojify(conversation) ==  %Conversation{method: "Get", path: "/colors", resp_body: "😎emoji😎", status: 200} 
-  end 
+  end
+
+  test "emojify should return unmodified conversation if status is not 200" do 
+   conversation =  %Conversation{method: "Get", path: "/colors", resp_body: "emoji", status: 201}
+   assert Plugins.emojify(conversation) == conversation  
+  end  
 end
