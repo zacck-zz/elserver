@@ -2,10 +2,11 @@ defmodule Elserver.Handler do
   
   @moduledoc "Handles Http Requests"
 
-  import Elserver.Plugins,  only: [rewrite_path: 1, track: 1, emojify: 1,]
+  import Elserver.Plugins,  only: [rewrite_path: 1, track: 1] 
   import Elserver.Parser, only: [parse: 1]
   import Elserver.FileHandler, only: [handle_file: 2]
   alias Elserver.Conversation 
+  alias Elserver.SharkController 
   @pages_path Path.expand("pages", File.cwd!)
 
   @doc "Transforms the request into a response"
@@ -15,16 +16,14 @@ defmodule Elserver.Handler do
     |> parse
     |> rewrite_path
     |> route
-    |> emojify 
     |> track
     |> format_response
   end
 
  
   # name=Great&type=white
-  def route(%Conversation{method: "Post", path: "/sharks/"} = conv) do 
-    %{ conv | status: 201, 
-              resp_body: "Created a #{conv.params["name"]} #{conv.params["type"]} shark"} 
+  def route(%Conversation{method: "Post", path: "/sharks/"} = conv) do
+    SharkController.create(conv)
   end 
 
  
@@ -42,11 +41,12 @@ defmodule Elserver.Handler do
   
 
   def route(%Conversation{method: "Get", path: "/sharks"} = conv) do 
-    %{ conv | status: 200,  resp_body: "Great White, Tiger, HammerHead, Mini Sharks, Monky Sharks" }
+    SharkController.index(conv)
   end
 
   def route(%Conversation{method: "Get", path: "/shark/" <> id } = conv) do 
-    %{conv | status: 200, resp_body: "Shark #{id}"}
+    params = Map.put(conv.params, "id", id)
+    SharkController.show(conv, params)
   end 
 
   def route(%Conversation{method: "Delete", path: "/shark/" <> id } = conv)  do
@@ -171,7 +171,7 @@ response = Elserver.Handler.handle(request)
 IO.puts response
 
 request = """
-Get /shark?id=1 HTTP/1.1
+Get /shark?id=3 HTTP/1.1
 Host: example.com 
 User-Agent: ExampleBrowser/1.0
 Accept: */*
