@@ -28,7 +28,7 @@ defmodule Elserver.Plugins do
 
   # emojify response 
   def emojify(%Conversation{status: 200 } = conv) do
-    %{conv | resp_body: "😎  #{conv.resp_body} 😎"}
+    %{conv | resp_body: "😎#{conv.resp_body}😎"}
   end 
 
   def emojify(%Conversation{} = conv), do: conv

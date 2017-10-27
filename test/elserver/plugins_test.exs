@@ -20,7 +20,6 @@ defmodule Elserver.PluginsTest do
   test "/wildlife path should be rewritten to /wildthings" do
     conversation = %Conversation{method: "Get", path: "/wildlife", resp_body: "The path /colors was not found on this server", status: 404} 
     assert Plugins.rewrite_path(conversation) == %Conversation{method: "Get", path: "/wildthings", resp_body: "The path /colors was not found on this server", status: 404} 
- 
   end 
 
 
@@ -28,8 +27,10 @@ defmodule Elserver.PluginsTest do
     conversation = %Conversation{method: "Get", path: "/colors", resp_body: "The path /colors was not found on this server", status: 200}
 
    assert Plugins.track(conversation) == conversation 
- 
   end   
 
-
+  test "emojify should apply emojis" do 
+    conversation = %Conversation{method: "Get", path: "/colors", resp_body: "emoji", status: 200}
+    assert Plugins.emojify(conversation) ==  %Conversation{method: "Get", path: "/colors", resp_body: "😎emoji😎", status: 200} 
+  end 
 end
