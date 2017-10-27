@@ -14,7 +14,7 @@ defmodule Elserver.Parser do
     
 
     headers = parse_headers(request_headers, %{})
- 
+    
     params = parse_params(headers["Content-Type"],params_string)
 
     %Elserver.Conversation{ 
@@ -25,8 +25,7 @@ defmodule Elserver.Parser do
     }  
   end 
 
-  defp parse_params("Content-Type: application/x-www-form-urlencoded 
-",params_string) do
+  defp parse_params("application/x-www-form-urlencoded",params_string) do
     params_string |> String.trim |> URI.decode_query
   end
 
