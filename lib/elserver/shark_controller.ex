@@ -1,18 +1,25 @@
 defmodule Elserver.SharkController do 
   alias Elserver.Wildthings
+  
+  @templates_path Path.expand("templates", File.cwd!)
+
+  defp render(conv, template, bindings \\ []) do 
+    content = 
+      @templates_path
+      |> Path.join(template)
+      |> EEx.eval_file(bindings)
+    %{conv| status: 200, resp_body: content} 
+  end 
 
   def index(conv) do
     items = 
       Wildthings.list_sharks()
-      |> Enum.map(fn shark -> "<li>#{shark.name} - #{shark.type}</li>" end)
-      |> Enum.join
-
-    %{ conv | status: 200,  resp_body: "<ul>#{items}</ul>"} 
+    render(conv, "index.eex", sharks: items)
   end
 
   def show(conv, %{"id" => id}) do
     shark = Wildthings.get_shark(id) 
-    %{conv | status: 200, resp_body: "<h1> Shark - #{shark.name}</h1>"}
+    render(conv, "show.eex", shark: shark)
   end
 
   def create(conv) do 

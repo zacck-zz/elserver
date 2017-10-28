@@ -1,0 +1,7 @@
+<h1> All the Sharks! </h1>
+
+<ul>
+  <%= for shark <- sharks do %>
+    <li><%= shark.name %> -  <%= shark.type %></li>
+  <% end %>
+</ul>
