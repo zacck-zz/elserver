@@ -50,7 +50,8 @@ defmodule Elserver.Handler do
   end 
 
   def route(%Conversation{method: "Delete", path: "/shark/" <> id } = conv)  do
-    %{conv | status: 202, resp_body: "Deleting #{id} ..."}
+    params = Map.put(conv.params, "id", id)
+    SharkController.delete(conv, params)
   end 
 
   def route(%Conversation{path: path} = conv) do 
