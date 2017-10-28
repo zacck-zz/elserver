@@ -27,6 +27,17 @@ defmodule Elserver.ParserTest do
 
     assert Elserver.Parser.parse(request).params ==  %{"name" => "Great", "type" =>  "white"}
  
-  end 
+  end
+
+  test "it should parse headers list into a map of headers" do 
+    headers = [
+      "Host: example.com", 
+      "User-Agent: ExampleBrowser/1.0",
+      "Accept: */*",
+      "Content-Type: application/x-www-form-urlencoded",
+      "Content-Length: 16"
+    ]
+    assert Elserver.Parser.parse_headers(headers) == %{"Host" =>  "example.com", "User-Agent" => "ExampleBrowser/1.0", "Accept" =>  "*/*", "Content-Type" =>  "application/x-www-form-urlencoded", "Content-Length" => "16"}
+  end  
 
 end 
