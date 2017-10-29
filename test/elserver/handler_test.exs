@@ -22,4 +22,9 @@ defmodule Elserver.HandlerTest do
 
   end  
 
+  test "it should handle a delete request and return a response" do 
+    conversation = %Conversation{method: "Delete", path: "/shark/102"}
+
+    assert Elserver.Handler.route(conversation) == %Conversation{method: "Delete", path: "/shark/102", resp_body: "Deleting 102 ...", status: 202} 
+  end 
 end 
