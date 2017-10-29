@@ -1,7 +1,32 @@
 defmodule Elserver.HandlerTest do
   use ExUnit.Case
+
+  
   alias Elserver.Conversation 
 
+
+  test "it should handle calls" do 
+    request = """
+    Get /wildthings HTTP/1.1
+    Host: example.com 
+    User-Agent: ExampleBrowser/1.0
+    Accept: */*
+
+    """
+
+    response = Elserver.Handler.handle(request)
+
+    assert response == """
+    HTTP/1.1 200 OK
+    Content-Type: text/html
+    Content-Length: 29
+
+    Baboons, Trees, Eland, Sharks
+    """
+ 
+  
+ 
+  end 
 
   test "it should return a 404 on paths that don't exist" do
     conversation = %Conversation{method: "Get", path: "/colors", status: nil,  resp_body: ""}
