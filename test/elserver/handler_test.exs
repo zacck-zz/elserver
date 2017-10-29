@@ -7,20 +7,20 @@ defmodule Elserver.HandlerTest do
 
   test "it should handle calls" do 
     request = """
-    Get /wildthings HTTP/1.1
-    Host: example.com 
-    User-Agent: ExampleBrowser/1.0
-    Accept: */*
-
+    Get /wildthings HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
     """
 
     response = Elserver.Handler.handle(request)
 
     assert response == """
-    HTTP/1.1 200 OK
-    Content-Type: text/html
-    Content-Length: 29
-
+    HTTP/1.1 200 OK\r
+    Content-Type: text/html\r
+    Content-Length: 29\r
+    \r
     Baboons, Trees, Eland, Sharks
     """
  
@@ -37,10 +37,10 @@ defmodule Elserver.HandlerTest do
     conversation = %Conversation{method: "Get", path: "/colors", status: 200,  resp_body: "Ok Cool"}
 
     response = """
-    HTTP/1.1 200 OK
-    Content-Type: text/html
-    Content-Length: 7
-
+    HTTP/1.1 200 OK\r
+    Content-Type: text/html\r
+    Content-Length: 7\r
+    \r
     Ok Cool
     """
     assert Elserver.Handler.format_response(conversation) == response

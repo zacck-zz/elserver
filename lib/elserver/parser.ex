@@ -5,10 +5,10 @@ defmodule Elserver.Parser do
   """
   def parse(request) do
     #split params from request
-    [header_lines, params_string] = String.split(request, "\n\n")
+    [header_lines, params_string] = String.split(request, "\r\n\r\n")
     
     #split request line from header lines 
-    [request_line | request_headers] = String.split(header_lines, "\n")
+    [request_line | request_headers] = String.split(header_lines, "\r\n")
     
     [method, path, _] =  String.split(request_line, " ")     
     
