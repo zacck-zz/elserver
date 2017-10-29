@@ -26,5 +26,13 @@ defmodule Elserver.HandlerTest do
     conversation = %Conversation{method: "Delete", path: "/shark/102"}
 
     assert Elserver.Handler.route(conversation) == %Conversation{method: "Delete", path: "/shark/102", resp_body: "Deleting 102 ...", status: 202} 
+  end
+
+  test "it should handle a get post for a single shark" do 
+    conversation = %Conversation{method: "Get", path: "/shark/1"}
+
+    assert Elserver.Handler.route(conversation) == %Conversation{method: "Get", path: "/shark/1", resp_body: "<h1>Show Shark</h1>\n<p>\nIs Bonzo hibernating? <strong>false</strong>\n</p>\n", status: 200}
+  
   end 
+
 end 
