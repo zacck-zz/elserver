@@ -6,7 +6,7 @@ defmodule Elserver.Plugins do
   
   @doc "Logs any 404 responses the server shows"
   def track(%Conversation{status: 404, path: path} = conv) do 
-    IO.puts "Warning: #{path} does not exist on this server"
+      IO.puts "Warning: #{path} does not exist on this server"
     conv
   end 
 
@@ -42,8 +42,11 @@ defmodule Elserver.Plugins do
   def rewrite_path_captures(conv, nil), do: conv 
   
   # Inspect
-  def log(conv), do: IO.inspect conv
- 
+  def log(conv) do
+    if Mix.env == :dev do
+      IO.inspect conv
+    end 
+  end
 end 
 
 
