@@ -44,6 +44,11 @@ defmodule Elserver.Handler do
     SharkController.index(conv)
   end
 
+  def route(%Conversation{method: "Get", path: "/api/sharks"} = conv) do 
+    Elserver.Api.SharkController.index(conv)
+  end
+
+
   def route(%Conversation{method: "Get", path: "/shark/" <> id } = conv) do 
     params = Map.put(conv.params, "id", id)
     SharkController.show(conv, params)
@@ -62,7 +67,7 @@ defmodule Elserver.Handler do
     # Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 #{Conversation.full_status(conv)}\r
-    Content-Type: text/html\r
+    Content-Type: #{conv.resp_content_type}\r
     Content-Length: #{byte_size(conv.resp_body)}\r
     \r
     #{conv.resp_body}
