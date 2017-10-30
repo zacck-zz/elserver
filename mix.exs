@@ -28,6 +28,7 @@ defmodule Elserver.Mixfile do
   # Run "mix help deps" to learn about dependencies.
   defp deps() do
     [
+      {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.7", only: :test}
     ]
   end
