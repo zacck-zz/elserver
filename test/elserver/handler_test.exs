@@ -61,7 +61,7 @@ defmodule Elserver.HandlerTest do
   end
 
   test "it should format a response correctly" do 
-    conversation = %Conversation{method: "Get", path: "/colors", status: 200,  resp_body: "Ok Cool"}
+    conversation = %Conversation{method: "Get", path: "/colors", resp_headers: %{"Content-Length" => 7, "Content-Type" => "text/html"}, status: 200,  resp_body: "Ok Cool"}
 
     response = """
     HTTP/1.1 200 OK\r

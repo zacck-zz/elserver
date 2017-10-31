@@ -17,6 +17,7 @@ defmodule Elserver.Handler do
     |> rewrite_path
     |> route
     |> track
+    |> put_content_length
     |> format_response
   end
 
@@ -63,12 +64,16 @@ defmodule Elserver.Handler do
     %{conv| status: 404, resp_body: "The path #{path} was not found on this server"}
   end
 
+  def put_content_length(conv) do 
+    updated_headers =  Map.put(conv.resp_headers, "Content-Length", byte_size(conv.resp_body))
+    %{conv | resp_headers: updated_headers}
+  end
   def format_response(%Conversation{} = conv) do
     # Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 #{Conversation.full_status(conv)}\r
-    Content-Type: #{conv.resp_content_type}\r
-    Content-Length: #{byte_size(conv.resp_body)}\r
+    Content-Type: #{conv.resp_headers["Content-Type"]}\r
+    Content-Length: #{conv.resp_headers["Content-Length"]}\r
     \r
     #{conv.resp_body}
     """
