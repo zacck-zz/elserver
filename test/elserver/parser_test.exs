@@ -3,14 +3,14 @@ defmodule Elserver.ParserTest do
   alias Elserver.Conversation
     test "it should parse the request into a map" do 
       request = """
-      Get /wildthings HTTP/1.1\r
+      GET /wildthings HTTP/1.1\r
       Host: example.com\r
       User-Agent: ExampleBrowser/1.0\r
       Accept: */*\r
       \r
       """
 
-      assert Elserver.Parser.parse(request) == %Conversation{method: "Get", headers: %{"Accept" =>  "*/*", "Host" =>  "example.com", "User-Agent" => "ExampleBrowser/1.0"}, path: "/wildthings", resp_body: "", status: nil}
+      assert Elserver.Parser.parse(request) == %Conversation{method: "GET", headers: %{"Accept" =>  "*/*", "Host" =>  "example.com", "User-Agent" => "ExampleBrowser/1.0"}, path: "/wildthings", resp_body: "", status: nil}
     end
 
   test "it should parse url encoded params " do 

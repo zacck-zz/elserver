@@ -23,17 +23,17 @@ defmodule Elserver.Handler do
 
  
   # name=Great&type=white
-  def route(%Conversation{method: "Post", path: "/sharks/"} = conv) do
+  def route(%Conversation{method: "POST", path: "/sharks/"} = conv) do
     SharkController.create(conv)
   end 
 
  
-  def route(%Conversation{method: "Get", path: "/wildthings"} = conv) do 
+  def route(%Conversation{method: "GET", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
   end 
 
 
-  def route(%Conversation{method: "Get", path: "/pages/" <> file} = conv) do
+  def route(%Conversation{method: "GET", path: "/pages/" <> file} = conv) do
       @pages_path
       |> Path.join(file <> ".html")
       |> File.read
@@ -41,16 +41,16 @@ defmodule Elserver.Handler do
   end 
   
 
-  def route(%Conversation{method: "Get", path: "/sharks"} = conv) do 
+  def route(%Conversation{method: "GET", path: "/sharks"} = conv) do 
     SharkController.index(conv)
   end
 
-  def route(%Conversation{method: "Get", path: "/api/sharks"} = conv) do 
+  def route(%Conversation{method: "GET", path: "/api/sharks"} = conv) do 
     Elserver.Api.SharkController.index(conv)
   end
 
 
-  def route(%Conversation{method: "Get", path: "/shark/" <> id } = conv) do 
+  def route(%Conversation{method: "GET", path: "/shark/" <> id } = conv) do 
     params = Map.put(conv.params, "id", id)
     SharkController.show(conv, params)
   end 

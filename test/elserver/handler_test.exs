@@ -6,7 +6,7 @@ defmodule Elserver.HandlerTest do
 
   test "it should handle api calls with json" do 
     request = """
-    Get /api/sharks HTTP/1.1\r
+    GET /api/sharks HTTP/1.1\r
     Host: example.com\r
     User-Agent: ExampleBrowser/1.0\r
     Accept: */*\r
@@ -34,7 +34,7 @@ defmodule Elserver.HandlerTest do
 
   test "it should handle calls" do 
     request = """
-    Get /wildthings HTTP/1.1\r
+    GET /wildthings HTTP/1.1\r
     Host: example.com\r
     User-Agent: ExampleBrowser/1.0\r
     Accept: */*\r
@@ -56,12 +56,12 @@ defmodule Elserver.HandlerTest do
   end 
 
   test "it should return a 404 on paths that don't exist" do
-    conversation = %Conversation{method: "Get", path: "/colors", status: nil,  resp_body: ""}
-    assert Elserver.Handler.route(conversation) == %Conversation{method: "Get", path: "/colors", resp_body: "The path #{conversation.path} was not found on this server", status: 404} 
+    conversation = %Conversation{method: "GET", path: "/colors", status: nil,  resp_body: ""}
+    assert Elserver.Handler.route(conversation) == %Conversation{method: "GET", path: "/colors", resp_body: "The path #{conversation.path} was not found on this server", status: 404} 
   end
 
   test "it should format a response correctly" do 
-    conversation = %Conversation{method: "Get", path: "/colors", resp_headers: %{"Content-Length" => 7, "Content-Type" => "text/html"}, status: 200,  resp_body: "Ok Cool"}
+    conversation = %Conversation{method: "GET", path: "/colors", resp_headers: %{"Content-Length" => 7, "Content-Type" => "text/html"}, status: 200,  resp_body: "Ok Cool"}
 
     response = """
     HTTP/1.1 200 OK\r
@@ -81,9 +81,9 @@ defmodule Elserver.HandlerTest do
   end
 
   test "it should handle a get post for a single shark" do 
-    conversation = %Conversation{method: "Get", path: "/shark/1"}
+    conversation = %Conversation{method: "GET", path: "/shark/1"}
 
-    assert Elserver.Handler.route(conversation) == %Conversation{method: "Get", path: "/shark/1", resp_body: "<h1>Show Shark</h1>\n<p>\nIs Bonzo hibernating? <strong>false</strong>\n</p>\n", status: 200}
+    assert Elserver.Handler.route(conversation) == %Conversation{method: "GET", path: "/shark/1", resp_body: "<h1>Show Shark</h1>\n<p>\nIs Bonzo hibernating? <strong>false</strong>\n</p>\n", status: 200}
   
   end
 
