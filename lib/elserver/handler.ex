@@ -20,7 +20,17 @@ defmodule Elserver.Handler do
     |> put_content_length
     |> format_response
   end
+ 
+  def route(%Conversation{ method: "GET", path: "/kaboom" } = conv ) do 
+    raise "Kaboom!"
+  end 
+ 
 
+  
+  def route(%Conversation{ method: "GET", path: "/hibernate/" <> time } = conv ) do 
+    time |> String.to_integer |>  :timer.sleep
+    %{conv | status: 200, resp_body: "Done Processing"}
+  end 
  
   # name=Great&type=white
   def route(%Conversation{method: "POST", path: "/sharks/"} = conv) do
