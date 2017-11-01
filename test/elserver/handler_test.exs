@@ -1,8 +1,33 @@
 defmodule Elserver.HandlerTest do
   use ExUnit.Case
-
-  
+ 
   alias Elserver.Conversation 
+  
+  test "POST /api/sharks" do
+    request = """
+    POST /api/bears HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    Content-Type: application/json\r
+    Content-Length: 21\r
+    \r
+    {"name": "Breezly", "type": "Polar"}
+    """
+
+    response = Elserver.Handler.handle(request)
+
+    assert response == """
+    HTTP/1.1 201 Created\r
+    Content-Type: text/html\r
+    Content-Length: 48\r
+    \r
+    Created a Polar shark named Breezly!
+    """
+  end
+
+
+
 
   test "it should format response headers correctly" do 
     conversation = %Conversation{resp_headers: %{"Content-Type" => "application/json", "Content-Length" =>  394}}
