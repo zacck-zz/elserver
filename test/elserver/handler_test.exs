@@ -4,6 +4,14 @@ defmodule Elserver.HandlerTest do
   
   alias Elserver.Conversation 
 
+  test "it should format response headers correctly" do 
+    conversation = %Conversation{resp_headers: %{"Content-Type" => "application/json", "Content-Length" =>  394}}
+
+    expected_headers ="Content-Type: application/json\r\nContent-Length: 394\r"
+
+    assert Elserver.Handler.format_response_headers(conversation) == expected_headers
+  end 
+
   test "it should handle api calls with json" do 
     request = """
     Get /api/sharks HTTP/1.1\r
