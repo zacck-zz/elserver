@@ -23,6 +23,10 @@ defmodule Elserver.Parser do
       params: params,
       headers: headers
     }  
+  end
+
+  defp parse_params("application/json", params_string) do
+    params_string |> Poison.Parser.parse!
   end 
 
   defp parse_params("application/x-www-form-urlencoded",params_string) do

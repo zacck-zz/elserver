@@ -26,7 +26,11 @@ defmodule Elserver.Handler do
   def route(%Conversation{method: "Post", path: "/sharks/"} = conv) do
     SharkController.create(conv)
   end 
-
+  
+  def route(%Conversation{method: "POST", path: "/api/sharks"} = conv) do
+    Elserver.Api.SharkController.create(conv)
+  end 
+  
  
   def route(%Conversation{method: "Get", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 

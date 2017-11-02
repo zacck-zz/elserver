@@ -5,7 +5,7 @@ defmodule Elserver.HandlerTest do
   
   test "POST /api/sharks" do
     request = """
-    POST /api/bears HTTP/1.1\r
+    POST /api/sharks HTTP/1.1\r
     Host: example.com\r
     User-Agent: ExampleBrowser/1.0\r
     Accept: */*\r
@@ -20,7 +20,7 @@ defmodule Elserver.HandlerTest do
     assert response == """
     HTTP/1.1 201 Created\r
     Content-Type: text/html\r
-    Content-Length: 48\r
+    Content-Length: 36\r
     \r
     Created a Polar shark named Breezly!
     """
