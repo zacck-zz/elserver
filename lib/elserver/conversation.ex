@@ -4,11 +4,16 @@ defmodule Elserver.Conversation do
             params: %{},
             headers: %{},
             resp_body: "", 
-            status: nil
+            status: nil,
+            resp_headers: %{"Content-Type" => "text/html"}
   
   def full_status(conv) do 
     "#{conv.status} #{status_reason(conv.status)}"
   end 
+
+  def content_length(conv) do 
+    byte_size(conv.resp_body)
+  end
 
   # define a private function using defp codes 
   defp status_reason(code) do 
