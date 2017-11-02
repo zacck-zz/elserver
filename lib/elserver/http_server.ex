@@ -37,7 +37,7 @@ defmodule Elserver.HttpServer do
     # run this in separate background process
     spawn (fn -> serve(client_socket) end)
 
-    # Loop back to wait and accept the next connection.
+    # Loop back to wait and accept the nextgconnection.
     accept_loop(listen_socket)
   end
 

@@ -5,6 +5,7 @@ defmodule Elserver.Handler do
   import Elserver.Plugins,  only: [rewrite_path: 1, track: 1] 
   import Elserver.Parser, only: [parse: 1]
   import Elserver.FileHandler, only: [handle_file: 2]
+  import Elserver.Node, only: [get_data: 1]
   alias Elserver.Conversation 
   alias Elserver.SharkController 
   @pages_path Path.expand("pages", File.cwd!)
@@ -24,8 +25,19 @@ defmodule Elserver.Handler do
   def route(%Conversation{ method: "GET", path: "/kaboom" } = conv ) do 
     raise "Kaboom!"
   end 
- 
 
+  def route(%Conversation{ method: "GET", path: "/nodedata"} = conv ) do
+    parent = self() # the process handling the current request
+
+    spawn(fn -> send(parent, {:result, get_data("node_1")}) end)
+    #pid2 = spawn(fn -> get_data("node_3999") end)
+    #pid3 = spawn(fn -> get_data("node_454") end)
+    
+    node1 = receive do {:result, name} -> name end
+    #snaps = [node1, node2, node3]
+
+    %{ conv | status: 200, resp_body: inspect node1}
+  end 
   
   def route(%Conversation{ method: "GET", path: "/hibernate/" <> time } = conv ) do 
     time |> String.to_integer |>  :timer.sleep
