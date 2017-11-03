@@ -8,6 +8,7 @@ defmodule Elserver.Handler do
   import Elserver.Node, only: [get_data: 1]
   alias Elserver.Conversation 
   alias Elserver.SharkController 
+  alias Elserver.Fetcher
   @pages_path Path.expand("pages", File.cwd!)
 
   @doc "Transforms the request into a response"
@@ -27,16 +28,18 @@ defmodule Elserver.Handler do
   end 
 
   def route(%Conversation{ method: "GET", path: "/nodedata"} = conv ) do
-    parent = self() # the process handling the current request
+    pid1 = Fetcher.async(fn -> get_data("node_1") end)
+    pid2 = Fetcher.async(fn -> get_data("node_2") end)
+    pid3 = Fetcher.async(fn -> get_data("node_3") end)
+    pid4 = Fetcher.async(fn -> Elserver.Tracker.get_location("bigfoot") end)
 
-    spawn(fn -> send(parent, {:result, get_data("node_1")}) end)
-    #pid2 = spawn(fn -> get_data("node_3999") end)
-    #pid3 = spawn(fn -> get_data("node_454") end)
-    
-    node1 = receive do {:result, name} -> name end
-    #snaps = [node1, node2, node3]
+    node_1 = Fetcher.get_result(pid1)
+    node_2 = Fetcher.get_result(pid2)
+    node_3 = Fetcher.get_result(pid3)
+    where_is_bigfoot = Fetcher.get_result(pid4)
 
-    %{ conv | status: 200, resp_body: inspect node1}
+    nodes = [node_1, node_2, node_3]
+    %{ conv | status: 200, resp_body: inspect {nodes, where_is_bigfoot}}
   end 
   
   def route(%Conversation{ method: "GET", path: "/hibernate/" <> time } = conv ) do 
