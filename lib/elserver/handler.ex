@@ -23,6 +23,15 @@ defmodule Elserver.Handler do
     |> format_response
   end
  
+
+  def route(%Conversations{ method: "POST", path: "/pledges"} = conv ) do 
+    Elserver.PledgeController.create(conv, conv.params)
+  end 
+
+  def route(%Conversations{ method: "GET", path: "/pledges"} = conv ) do 
+    Elserver.PledgeController.index(conv)
+  end 
+
   def route(%Conversation{ method: "GET", path: "/kaboom" } = conv ) do 
     raise "Kaboom!"
   end 
