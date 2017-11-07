@@ -35,8 +35,9 @@ defmodule Elserver.HttpServer do
 
     # Receives the request and sends a response over the client socket.
     # run this in separate background process
-    spawn (fn -> serve(client_socket) end)
-
+    pid = spawn (fn -> serve(client_socket) end)
+    
+    :ok = :gen_tcp.controlling_process(client_socket , pid)
     # Loop back to wait and accept the nextgconnection.
     accept_loop(listen_socket)
   end
