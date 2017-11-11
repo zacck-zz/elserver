@@ -49,7 +49,11 @@ defmodule Elserver.Handler do
   def route(%Conversation{method: "POST", path: "/sharks/"} = conv) do
     SharkController.create(conv)
   end 
-
+  
+  def route(%Conversation{method: "POST", path: "/api/sharks"} = conv) do
+    Elserver.Api.SharkController.create(conv)
+  end 
+  
  
   def route(%Conversation{method: "GET", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
@@ -95,13 +99,17 @@ defmodule Elserver.Handler do
     # Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 #{Conversation.full_status(conv)}\r
-    Content-Type: #{conv.resp_headers["Content-Type"]}\r
-    Content-Length: #{conv.resp_headers["Content-Length"]}\r
+    #{format_response_headers(conv)}
     \r
     #{conv.resp_body}
     """
   end
 
+  def format_response_headers(conv) do
+      for {k, v} <- conv.resp_headers do 
+       "#{k}: #{v}\r"
+      end  |> Enum.sort |> Enum.reverse |> Enum.join("\n")
+  end 
 end 
 
 
