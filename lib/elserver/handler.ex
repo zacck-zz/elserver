@@ -37,17 +37,15 @@ defmodule Elserver.Handler do
   end 
 
   def route(%Conversation{ method: "GET", path: "/nodedata"} = conv ) do
-    pid1 = Fetcher.async(fn -> get_data("node_1") end)
-    pid2 = Fetcher.async(fn -> get_data("node_2") end)
-    pid3 = Fetcher.async(fn -> get_data("node_3") end)
-    pid4 = Fetcher.async(fn -> Elserver.Tracker.get_location("bigfoot") end)
+    nodes =
+      ["node_1", "node_2", "node_3"]
+      |> Enum.map(&Task.async(Elserver.Node, :get_data, [&1] ))
+      |> Enum.map(&Task.await/1)
+    
+    location_task = Task.async(Elserver.Tracker, :get_location, ["bigfoot"])
 
-    node_1 = Fetcher.get_result(pid1)
-    node_2 = Fetcher.get_result(pid2)
-    node_3 = Fetcher.get_result(pid3)
-    where_is_bigfoot = Fetcher.get_result(pid4)
+    where_is_bigfoot = Task.await(location_task)
 
-    nodes = [node_1, node_2, node_3]
     %{ conv | status: 200, resp_body: inspect {nodes, where_is_bigfoot}}
   end 
   
@@ -60,7 +58,11 @@ defmodule Elserver.Handler do
   def route(%Conversation{method: "POST", path: "/sharks/"} = conv) do
     SharkController.create(conv)
   end 
-
+  
+  def route(%Conversation{method: "POST", path: "/api/sharks"} = conv) do
+    Elserver.Api.SharkController.create(conv)
+  end 
+  
  
   def route(%Conversation{method: "GET", path: "/wildthings"} = conv) do 
    %{ conv | status: 200, resp_body: "Baboons, Trees, Eland, Sharks" } 
@@ -106,13 +108,17 @@ defmodule Elserver.Handler do
     # Use values in the map to create an HTTP response string:
     """
     HTTP/1.1 #{Conversation.full_status(conv)}\r
-    Content-Type: #{conv.resp_headers["Content-Type"]}\r
-    Content-Length: #{conv.resp_headers["Content-Length"]}\r
+    #{format_response_headers(conv)}
     \r
     #{conv.resp_body}
     """
   end
 
+  def format_response_headers(conv) do
+      for {k, v} <- conv.resp_headers do 
+       "#{k}: #{v}\r"
+      end  |> Enum.sort |> Enum.reverse |> Enum.join("\n")
+  end 
 end 
 
 

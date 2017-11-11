@@ -13,7 +13,19 @@ defmodule Elserver.HttpClient do
     IO.puts response
     :ok = :gen_tcp.close(socket)
     IO.puts "Closing socket"
-  end 
+  end
+
+ def response(port, request) do
+    localhost = 'localhost' # to make it runnable on one machine
+    {:ok, socket} = 
+      :gen_tcp.connect(localhost, port, [:binary, packet: :raw, active: false])
+    :ok = :gen_tcp.send(socket, request)
+    {:ok, response} =  :gen_tcp.recv(socket, 0)
+    :ok = :gen_tcp.close(socket)
+    response
+ end
+
+   
 
 end
 
