@@ -24,11 +24,11 @@ defmodule Elserver.Handler do
   end
  
 
-  def route(%Conversations{ method: "POST", path: "/pledges"} = conv ) do 
+  def route(%Conversation{ method: "POST", path: "/pledge"} = conv ) do 
     Elserver.PledgeController.create(conv, conv.params)
   end 
 
-  def route(%Conversations{ method: "GET", path: "/pledges"} = conv ) do 
+  def route(%Conversation{ method: "GET", path: "/pledges"} = conv ) do 
     Elserver.PledgeController.index(conv)
   end 
 
