@@ -29,6 +29,8 @@ defmodule Elserver.Mixfile do
   defp deps() do
     [
       {:poison, "~> 3.1"},
+      {:httpoison, "~> 0.12.0"},
+      {:hackney, "~> 1.8.0", override: true},
       {:excoveralls, "~> 0.7", only: :test}
     ]
   end
