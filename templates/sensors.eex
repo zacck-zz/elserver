@@ -1,0 +1,10 @@
+<h1> Node Data  </h1>
+
+<h2> Bigfoot is at <%= inspect location %> </h2>
+
+<ul>
+  <%= for node <- nodes do %>
+    <li><%= node %> </li>
+  <% end %>
+</ul>
+
