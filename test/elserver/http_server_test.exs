@@ -6,17 +6,24 @@ defmodule Elserver.HttpTest do
     port = 4000
     spawn(HttpServer, :start, [port])
 
-    url = "http://localhost:#{port}/wildthings"
+    urls = [
+      "http://localhost:#{port}/wildthings",
+      "http://localhost:#{port}/sharks",
+      "http://localhost:#{port}/shark/1",
+      "http://localhost:#{port}/nodedata",
+      "http://localhost:#{port}/api/sharks"
+    ]
 
-    1..5 
-    |> Enum.map(fn(_) -> Task.async(fn -> HTTPoison.get(url) end) end) #run a task for each number to get the url 
+
+
+    urls 
+    |> Enum.map(fn(link) -> Task.async(fn -> HTTPoison.get(link) end) end) #run a task for each number to get the url 
     |> Enum.map(&Task.await/1) # for each task await a result 
     |> Enum.map(&assert_successful_response/1)
   end
 
   defp assert_successful_response({:ok, resp}) do
     assert resp.status_code == 200
-    assert resp.body == "Baboons, Trees, Eland, Sharks"
   end 
 
 end
