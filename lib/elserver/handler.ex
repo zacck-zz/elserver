@@ -6,6 +6,7 @@ defmodule Elserver.Handler do
   import Elserver.Parser, only: [parse: 1]
   import Elserver.FileHandler, only: [handle_file: 2]
   import Elserver.Node, only: [get_data: 1]
+  import Elserver.View, only: [render: 3]
   alias Elserver.Conversation 
   alias Elserver.SharkController 
   alias Elserver.Fetcher
@@ -45,8 +46,9 @@ defmodule Elserver.Handler do
     location_task = Task.async(Elserver.Tracker, :get_location, ["bigfoot"])
 
     where_is_bigfoot = Task.await(location_task)
+    
 
-    %{ conv | status: 200, resp_body: inspect {nodes, where_is_bigfoot}}
+    render(conv, "sensors.eex", nodes: nodes, location: where_is_bigfoot)
   end 
   
   def route(%Conversation{ method: "GET", path: "/hibernate/" <> time } = conv ) do 
