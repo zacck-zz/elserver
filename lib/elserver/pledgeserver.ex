@@ -3,14 +3,16 @@ defmodule Elserver.PledgeServer do
   @procname :pledge_server
 
   # Client Process  
-  def start() do
-    pid = spawn(__MODULE__, :listen_loop, [[]])
+  def start(initial_state \\ []) do
+    pid = spawn(__MODULE__, :listen_loop, [initial_state])
     Process.register(pid, @procname)
     pid
   end 
   
   def create_pledge( name, amount) do 
-    send @procname, {:create_pledge, name, amount}
+    send @procname, {self(), :create_pledge, name, amount}
+    
+    receive do {:response, id} -> id end
   end
 
   def recent_pledges do
@@ -29,7 +31,6 @@ defmodule Elserver.PledgeServer do
   
   #use a process to continously monitor for a message 
   def listen_loop(state) do
-
     receive do
       {sender, :create_pledge, name, amount} ->  
         {:ok, id} = database_pledge(name, amount)
