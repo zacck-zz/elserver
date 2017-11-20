@@ -24,12 +24,22 @@ defmodule Elserver.Handler do
     |> format_response
   end
  
+  
+  def route(%Conversation{ method: "GET", path: "/404s"} = conv ) do 
+    counts = Elserver.FourOhFourCounter.get_counts()
 
-  def route(%Conversation{ method: "POST", path: "/pledge"} = conv ) do 
+    %{conv | status: 200, resp_body: inspect counts}
+  end 
+  
+  def route(%Conversation{ method: "GET", path: "/newpledge"} = conv ) do 
+    Elserver.PledgeController.new(conv)
+  end 
+
+  def route(%Conversation{ method: "POST", path: "/pledges"} = conv ) do
     Elserver.PledgeController.create(conv, conv.params)
   end 
 
-  def route(%Conversation{ method: "GET", path: "/pledges"} = conv ) do 
+  def route(%Conversation{ method: "GET", path: "/allpledges"} = conv ) do 
     Elserver.PledgeController.index(conv)
   end 
 
