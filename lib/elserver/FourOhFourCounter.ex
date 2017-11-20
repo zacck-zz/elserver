@@ -7,10 +7,7 @@ defmodule Elserver.FourOhFourCounter do
     pid 
   end 
 
-  def bump_count(path) do
-    if Process.whereis(@counter) == nil do
-      start()
-    end 
+  def bump_count(path) do   
     send @counter, {self(), :bump_count, path}
 
     receive do {:response, count} -> count end

@@ -14,7 +14,6 @@ defmodule Elserver.PluginsTest do
   test "the tracker should return an unmodified conversation with 404 status" do 
     conversation = %Conversation{method: "GET", path: "/colors", resp_body: "The path /colors was not found on this server", status: 404} 
     assert Plugins.track(conversation) == conversation
-    assert capture_io(fn() -> Elserver.Plugins.track(conversation) end) == "Warning: /colors does not exist on this server\n"
   end
 
   test "/wildlife path should be rewritten to /wildthings" do
