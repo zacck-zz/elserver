@@ -3,10 +3,14 @@ defmodule Elserver.Plugins do
   Provides some plugins to use
   """
   alias Elserver.Conversation
-  
+  alias Elserver.FourOhFourCounter 
+
+
+
   @doc "Logs any 404 responses the server shows"
   def track(%Conversation{status: 404, path: path} = conv) do 
       IO.puts "Warning: #{path} does not exist on this server"
+      FourOhFourCounter.bump_count(path)
     conv
   end 
 

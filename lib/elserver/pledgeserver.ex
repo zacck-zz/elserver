@@ -45,7 +45,7 @@ defmodule Elserver.PledgeServer do
         total = &Enum.map(state, elem(&1, 1)) |> Enum.sum 
         send sender, {:total_pledged, total}
         listen_loop(state)
-       unexpected -> 
+      unexpected -> 
         inspect unexpected
         listen_loop(state)
     end 
