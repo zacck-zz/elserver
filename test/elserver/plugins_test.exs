@@ -1,7 +1,6 @@
 defmodule Elserver.PluginsTest do
  use ExUnit.Case 
 
-  import ExUnit.CaptureIO 
   alias Elserver.Conversation
   alias Elserver.Plugins 
   
