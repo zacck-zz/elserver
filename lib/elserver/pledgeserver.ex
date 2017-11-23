@@ -2,54 +2,51 @@ defmodule Elserver.PledgeServer do
 
   @procname :pledge_server
 
-  # Client Process  
-  def start(initial_state \\ []) do
-    pid = spawn(__MODULE__, :listen_loop, [initial_state])
-    Process.register(pid, @procname)
-    pid
+  import Elserver.GenericServer, only: [call: 2, cast: 2]
+
+  # Client Process
+  def start do
+   Elserver.GenericServer.start(__MODULE__, [], @procname)
   end 
-  
+
   def create_pledge( name, amount) do 
-    send @procname, {self(), :create_pledge, name, amount}
-    
-    receive do {:response, id} -> id end
+    call @procname, {:create_pledge, name, amount}
   end
 
-  def recent_pledges do
-    send @procname, {self(), :recent_pledges}
+  def clear do 
+    cast @procname, :clear
+  end 
 
-    receive do {:response, pledges} -> pledges end
+  def recent_pledges do
+    call @procname, :recent_pledges
   end 
 
   def total_pledged do
-    send @procname, {self(), :total_pledged}
-
-    receive do {:response, total} -> total end
+    send @procname, :total_pledged
   end  
 
-  #Server Process
+
+  # Server Callbacks
   
-  #use a process to continously monitor for a message 
-  def listen_loop(state) do
-    receive do
-      {sender, :create_pledge, name, amount} ->  
-        {:ok, id} = database_pledge(name, amount)
-        recent_state = Enum.take(state, 2)
-        current_state =  [{name, amount} | recent_state]
-        send sender, {:response, id}
-        listen_loop(current_state)
-      {sender, :recent_pledges} ->
-        send sender, {:response, state}
-        listen_loop(state) 
-      {sender, :total_pledged} ->
-        total = &Enum.map(state, elem(&1, 1)) |> Enum.sum 
-        send sender, {:total_pledged, total}
-        listen_loop(state)
-      unexpected -> 
-        inspect unexpected
-        listen_loop(state)
-    end 
+  def handle_cast(:clear, _state) do
+    []
+  end 
+
+  def handle_call(:total_pledged, state) do
+    total = &Enum.map(state, elem(&1, 1)) |> Enum.sum 
+    {total, state}
   end
+  
+  def handle_call(:recent_pledges, state) do 
+    {state, state}
+  end
+
+  def handle_call({:create_pledge, name, amount},  state) do 
+    {:ok, id} = database_pledge(name, amount)
+    recent_state = Enum.take(state, 2)
+    current_state =  [{name, amount} | recent_state]
+    {id, current_state}
+  end  
 
   defp  database_pledge(_name, _amount) do
     {:ok, "pledge-#{:rand.uniform(1000)}"} 
