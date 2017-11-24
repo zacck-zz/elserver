@@ -1,9 +1,10 @@
 defmodule Elserver.FourOhFourCounter do 
   @counter :counter
 
+  use GenServer 
 
   def start() do
-    Elserver.GenericServer.start(__MODULE__, [], @counter)
+    GenServer.start(__MODULE__, [], name: @counter)
   end 
 
   def bump_count(path) do   
@@ -37,20 +38,20 @@ defmodule Elserver.FourOhFourCounter do
     end  
   end
 
-  def handle_call({:bump_count, path}, state) do
+  def handle_call({:bump_count, path}, _from, state) do
     current_state = [path | state]
-    {:ok, current_state}
+    {:reply, :ok, current_state}
   end 
 
-  def handle_call({:get_count,path}, state) do
+  def handle_call({:get_count,path}, _from,  state) do
     count =  Enum.count(state, fn(x) -> x == path end)
-    {count, state}
+    {:reply, count, state}
   end 
 
-  def handle_call(:get_counts, state) do
+  def handle_call(:get_counts, _from, state) do
     totals =  Enum.chunk_by(Enum.sort(state), &(&1))
     counts = Enum.reduce(totals, %{}, &(Map.put(&2, Enum.at(&1, 0), Enum.count(&1))))
-    {counts, state}
+    {:reply, counts, state}
   end 
 
    
