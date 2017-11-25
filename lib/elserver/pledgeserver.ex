@@ -47,7 +47,8 @@ defmodule Elserver.PledgeServer do
   end 
 
   def handle_cast({:set_cache_size, size}, _from, state) do
-    {:noreply, %{ state | cache_size: size}}
+    pledges = Enum.take(state.pledges, size)
+    {:noreply, %{ state | pledges: pledges, cache_size: size}}
   end 
 
   def handle_call(:total_pledged, _from,  state) do

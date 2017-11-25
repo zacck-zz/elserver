@@ -35,9 +35,6 @@ defmodule Elserver.Handler do
     Elserver.PledgeController.new(conv)
   end 
 
-  def route(%Conversation{ method: "POST", path: "/pledges"} = conv ) do
-    Elserver.PledgeController.create(conv, conv.params)
-  end 
 
   def route(%Conversation{ method: "GET", path: "/allpledges"} = conv ) do 
     Elserver.PledgeController.index(conv)
