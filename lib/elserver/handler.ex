@@ -45,17 +45,8 @@ defmodule Elserver.Handler do
   end 
 
   def route(%Conversation{ method: "GET", path: "/nodedata"} = conv ) do
-    nodes =
-      ["node_1", "node_2", "node_3"]
-      |> Enum.map(&Task.async(Elserver.Node, :get_data, [&1] ))
-      |> Enum.map(&Task.await/1)
-    
-    location_task = Task.async(Elserver.Tracker, :get_location, ["bigfoot"])
-
-    where_is_bigfoot = Task.await(location_task)
-    
-
-    render(conv, "sensors.eex", nodes: nodes, location: where_is_bigfoot)
+    node_data = Elserver.NodeServer.get_node_data 
+    %{ conv | status: 200 , resp_body: inspect node_data }
   end 
   
   def route(%Conversation{ method: "GET", path: "/hibernate/" <> time } = conv ) do 
