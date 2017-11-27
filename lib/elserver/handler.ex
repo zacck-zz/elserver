@@ -46,7 +46,7 @@ defmodule Elserver.Handler do
 
   def route(%Conversation{ method: "GET", path: "/nodedata"} = conv ) do
     node_data = Elserver.NodeServer.get_node_data 
-    %{ conv | status: 200 , resp_body: inspect node_data }
+    %{ conv | status: 200, resp_body: inspect node_data }
   end 
   
   def route(%Conversation{ method: "GET", path: "/hibernate/" <> time } = conv ) do 
