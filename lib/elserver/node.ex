@@ -9,6 +9,6 @@ defmodule Elserver.Node do
     # Wait for request to complete 
     :timer.sleep(2000)
     # Return response
-    "#{node_id}-data"
+    "#{:rand.uniform(1000)}-data"
   end 
 end 
