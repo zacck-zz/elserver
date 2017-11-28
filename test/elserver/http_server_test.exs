@@ -1,10 +1,13 @@
-defmodule Elserver.HttpTest do
+defmodule Elserver.HttpServerTest do
   use ExUnit.Case 
   alias Elserver.HttpServer
 
   test "server shold accept connection and respond" do 
     port = 4000
     spawn(HttpServer, :start, [port])
+    
+    # Stat node Server for node data 
+    Elserver.NodeServer.start()
 
     urls = [
       "http://localhost:#{port}/wildthings",
