@@ -9,8 +9,9 @@ defmodule Elserver.PledgeServer do
   end 
 
   # Client Process
-  def start do
-   GenServer.start(__MODULE__, %State{}, name: @procname)
+  def start_link(_arg) do
+   IO.puts "Starting the PledgeServer"
+   GenServer.start_link(__MODULE__, %State{}, name: @procname)
   end 
 
   def create_pledge( name, amount) do 

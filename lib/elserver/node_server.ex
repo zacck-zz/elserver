@@ -6,15 +6,16 @@ defmodule Elserver.NodeServer do
 
   # State 
   defmodule State do 
-    defstruct node_data: %{}, refresh_interval: :timer.seconds(5)
+    defstruct node_data: %{}, refresh_interval: :timer.minutes(60)
   end 
 
 
   # Client Interface 
 
-  def start do
+  def start_link(_arg) do
     #start with an empty map as state 
-    GenServer.start(__MODULE__, %State{}, name: @name)
+    IO.puts "Starting #{@name} server"
+    GenServer.start_link(__MODULE__, %State{}, name: @name)
   end 
 
   def get_node_data do 
