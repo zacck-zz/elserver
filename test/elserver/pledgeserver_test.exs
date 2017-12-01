@@ -5,7 +5,7 @@ defmodule Elserver.PledgeServerTest do
 
 
   test "it should only cache the 3 most recent items" do 
-    PledgeServer.start()
+    PledgeServer.start_link([])
 
     for i <- 1..5 do
       PledgeServer.create_pledge("name#{i}", i)

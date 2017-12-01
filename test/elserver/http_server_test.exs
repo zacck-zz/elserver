@@ -7,7 +7,7 @@ defmodule Elserver.HttpServerTest do
     spawn(HttpServer, :start, [port])
     
     # Stat node Server for node data 
-    Elserver.NodeServer.start()
+    Elserver.NodeServer.start_link(60)
 
     urls = [
       "http://localhost:#{port}/wildthings",
