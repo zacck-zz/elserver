@@ -12,10 +12,10 @@ defmodule Elserver.NodeServer do
 
   # Client Interface 
 
-  def start_link(_arg) do
+  def start_link(arg) do
     #start with an empty map as state 
     IO.puts "Starting #{@name} server"
-    GenServer.start_link(__MODULE__, %State{}, name: @name)
+    GenServer.start_link(__MODULE__, %State{refresh_interval: arg }, name: @name)
   end 
 
   def get_node_data do 

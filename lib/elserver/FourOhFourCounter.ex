@@ -5,7 +5,7 @@ defmodule Elserver.FourOhFourCounter do
 
   # Client Interface
   
-  def start() do
+  def start_link(_arg) do
     GenServer.start(__MODULE__, [], name: @counter)
   end 
 
