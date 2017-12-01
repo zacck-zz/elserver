@@ -9,7 +9,8 @@ defmodule Elserver.ServicesSupervisor do
   def init(:ok) do
     children = [
       Elserver.PledgeServer,
-      Elserver.NodeServer
+      {Elserver.NodeServer, 600},
+      Elserver.FourOhFourCounter
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
