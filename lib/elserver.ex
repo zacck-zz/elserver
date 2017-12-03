@@ -1,8 +1,10 @@
 defmodule Elserver do
- def hello(name) do
-    "Howdy #{name} from Elixir!"
-  end
+  use Application
+
+  def start(_type, _args) do
+    IO.puts "Starting Elserver"
+    Elserver.Supervisor.start_link()
+  end 
 end
 
 
-#IO.puts Elserver.hello("Zacck")
