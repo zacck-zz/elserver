@@ -5,6 +5,7 @@ defmodule Elserver.Mixfile do
     [
       app: :elserver,
       version: "0.1.0",
+      description: "Small hackathon through elixir",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
@@ -21,7 +22,9 @@ defmodule Elserver.Mixfile do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Elserver, []},
+      env: [port: 3000]
     ]
   end
 

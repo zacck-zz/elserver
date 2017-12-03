@@ -29,7 +29,8 @@ defmodule Elserver.KickStarter do
 
   defp start_server do
     IO.puts "Starting the Httpserver"
-    server_pid = spawn_link(Elserver.HttpServer, :start, [4000])
+    port = Application.get_env(:elserver, :port)
+    server_pid = spawn_link(Elserver.HttpServer, :start, [port])
     Process.register(server_pid, :http_server)
     server_pid
   end 
