@@ -8,7 +8,6 @@ defmodule Elserver.Supervisor do
 
   def init(:ok) do
     children = [
-      Elserver.KickStarter, 
       Elserver.ServicesSupervisor
     ]
 

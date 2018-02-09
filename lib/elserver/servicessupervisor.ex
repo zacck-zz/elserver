@@ -9,7 +9,7 @@ defmodule Elserver.ServicesSupervisor do
   def init(:ok) do
     children = [
       Elserver.PledgeServer,
-      {Elserver.NodeServer, 600},
+      {Elserver.NodeServer, 600000},
       Elserver.FourOhFourCounter
     ]
 
