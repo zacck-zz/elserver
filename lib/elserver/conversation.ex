@@ -14,7 +14,7 @@ defmodule Elserver.Conversation do
             status: nil,
             resp_headers: %{"Content-Type" => "text/html"}
   
-  @doc"""
+  @doc """
   This function takes a conversation and returns the full 
   reason containing code and the status
   """
@@ -22,7 +22,7 @@ defmodule Elserver.Conversation do
     "#{conv.status} #{status_reason(conv.status)}"
   end 
   
-  @doc"""
+  @doc """
   This function calculates the size of the response body 
   """
   def content_length(conv) do 
